@@ -2,21 +2,28 @@ import streamlit as st
 from controllers.auth_2 import SharePointClient
 import yaml
 from controllers.functions import OfficeConfig
+import time
 
+with st.empty():
+    for seconds in range(60):
+        st.write(f"⏳ {seconds} seconds have passed")
+        time.sleep(1)
+    st.write("✔️ 1 minute over!")
 # still useless right now
-def Logger(header,data):
-    st.header(header)
-    st.markdown("""
-    ## Loging Info.   
-    {}
-    """.format(data))
 
-st.header("Debug Logs and runs")
+st.header("Dashboard")
 # configure sharepoint connection.
 oConf = OfficeConfig()
-st.write(oConf)
+# we can have a dashboard here.
+
+st.write('Dashboard Comming here.')
 
 Logs, runs = st.tabs(["Libary Search", "Migrations"])
+
+
+# let's experiment with an independent side menu on this one
+with st.sidebar:
+        st.write("Testing Custom Side Bar")
 
 def create_tabs(list_of_dicts):
     # Create a list of tab titles
