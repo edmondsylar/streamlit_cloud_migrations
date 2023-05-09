@@ -16,7 +16,7 @@ def configurations():
 
 def main():
     load_dotenv()
-    st.subheader("Ask your PDF 💬")    
+    st.subheader("Ask your Files 💬")    
     # upload file
     pdf = st.file_uploader("Upload your PDF", type="pdf")
     

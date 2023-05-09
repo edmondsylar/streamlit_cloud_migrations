@@ -3,13 +3,12 @@ from controllers.auth_2 import SharePointClient
 import yaml
 from controllers.functions import OfficeConfig
 import time
+from rich.console import Console
 
-# with st.empty():
-#     for seconds in range(60):
-#         st.write(f"⏳ {seconds} seconds have passed")
-#         time.sleep(1)
-#     st.write("✔️ 1 minute over!")
-# still useless right now
+# import sample data from Data/Samples.py
+from pages.Data.Samples import sites
+
+console = Console()
 
 st.header("Dashboard")
 # configure sharepoint connection.
@@ -20,6 +19,13 @@ st.write('Dashboard Comming here.')
 
 Logs, runs = st.tabs(["Libary Search", "Migrations"])
 
+# create a variable to store the active selected site.
+active_site = None
+
+# function creates the active site
+def create_active_site(data):
+    pass
+
 
 # let's experiment with an independent side menu on this one
 with st.sidebar:
@@ -28,15 +34,36 @@ with st.sidebar:
 def create_tabs(list_of_dicts):
     # Create a list of tab titles
     tab_titles = [d['Title'] for d in list_of_dicts]
-    
     # Create a tab for each title
     tabs = st.tabs(tab_titles)
     
     # Iterate over the tabs and add content to each one
     for i, tab in enumerate(tabs):
         with tab:
-            # Display the contents of the corresponding dictionary
-            st.write(list_of_dicts[i])
+            Library = list_of_dicts[i]
+            st.markdown("## {}".format(Library['Title']))
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                # create a form to Enter location of the Data we need to the library.
+                with st.form(key='sp_form_migration_{}'.format(i)):
+                    # create a text input for the user to enter the location of the data.
+                    location = st.text_input("Location")
+                    submit = st.form_submit_button(label="Submit")
+                    if submit:
+                        st.success('You have entered {}'.format(location))
+
+            with col2:
+                # create a form to Upload document and folders.
+                with st.form(key='sp_form_upload_{}'.format(i)):
+                    # create a text input for the user to enter the location of the data.
+                    upload = st.file_uploader("Upload Files", accept_multiple_files=True)
+                    submit = st.form_submit_button(label="Submit")
+                    if submit:
+                        st.success('You have uploaded {}'.format(upload))
+                
+
+
 
 def selectable_tabs(list_of_dicts):
     # Create a list of tab titles
@@ -53,10 +80,8 @@ def selectable_tabs(list_of_dicts):
 def entry():
     with Logs:
         libs = None
-
-        st.write("Sharepoint Library | Tests")
         with st.form(key='sp_form_search'):
-            sp_site = st.text_input("Sharepoint site")
+            sp_site = st.text_input("Sharepoint site url")
             # sp_library = st.text_input("Sharepoint Library")
             submit = st.form_submit_button(label="Search")
 
@@ -66,8 +91,9 @@ def entry():
                 except Exception as ex:
                     st.write(ex)
 
-        st.markdown("## SP Libraries")
         if libs is not None:
+            st.markdown("## Sharepoint Libraries:")
+            create_active_site(libs)
             create_tabs(libs)
 
 
@@ -81,10 +107,7 @@ except Exception as error:
     This feature requires authenticating with Microsoft 365   
     in order to enable this feature, you will need to login with your   
     office365 account to access the sharepoint environment.
-    """)
-# check that there is a valid connection.
 
-
-
-    
-
+    ### Error Encountered
+    {}
+    """.format(error))

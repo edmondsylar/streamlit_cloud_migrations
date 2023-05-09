@@ -1,12 +1,3 @@
-# from shareplum import Site
-# from shareplum import Office365
-
-# authcookie = Office365('https://housingfinancecoug.sharepoint.com', username='SpAdmin@housingfinance.co.ug', password='#p@ssw0rd123').GetCookies()
-# site = Site('https://housingfinancecoug.sharepoint.com/sites/compliance-universe', authcookie=authcookie)
-
-# print(authcookie)
-
-
 from shareplum import Site
 from shareplum import Office365
 import os
