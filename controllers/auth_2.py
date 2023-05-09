@@ -1,6 +1,9 @@
 from shareplum import Site
 from shareplum import Office365
 import os
+from rich.console import Console
+
+console = Console()
 
 class SharePointClient:
     def __init__(self, env_url, username, password):
@@ -46,4 +49,19 @@ class SharePointClient:
         
         # Return the list of document libraries
         return libraries
+
+
+    # function uploaded the pass list of documents to an existing library
+    def upload_to_library(self, site_url, doc_library_name, list_of_docs):
+        self.site = Site(site_url, authcookie=self.authcookie)
+        # Get the document library
+        sp_list = self.site.List(doc_library_name) # type:ignore
+        
+        console.log(list_of_docs, sp_list)
+
+        # Upload all files in the directory
+        for file_name in os.listdir(list_of_docs):
+            file_path = os.path.join(list_of_docs, file_name)
+            with open(file_path, 'rb') as file:
+                sp_list.UpdateListItems(data=file.read(), kind='New', filename=file_name) # type:ignore
 

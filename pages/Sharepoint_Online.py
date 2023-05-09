@@ -19,6 +19,8 @@ st.write('Dashboard Comming here.')
 
 Logs, runs = st.tabs(["Libary Search", "Migrations"])
 
+selected_sp_site = None
+
 # create a variable to store the active selected site.
 active_site = None
 
@@ -60,7 +62,17 @@ def create_tabs(list_of_dicts):
                     upload = st.file_uploader("Upload Files", accept_multiple_files=True)
                     submit = st.form_submit_button(label="Submit")
                     if submit:
-                        st.success('You have uploaded {}'.format(upload))
+                        console.log(selected_sp_site)
+                        # call the upload_to_libary function from OfficeClient
+                        if selected_sp_site is not None:
+                            upload_process = OfficeClient.upload_to_library(selected_sp_site, Library['Title'], upload)
+                            st.success('You have uploaded {}'.format(upload))
+                        else:
+                            st.warning({
+                                "Smg":"Something went Wrong!",
+                                "selected_sp_site": selected_sp_site,
+                                "Response": upload_process, 
+                                })
                 
 
 
@@ -84,10 +96,10 @@ def entry():
             sp_site = st.text_input("Sharepoint site url")
             # sp_library = st.text_input("Sharepoint Library")
             submit = st.form_submit_button(label="Search")
-
             if submit:
                 try:
                     libs = OfficeClient.get_libraries(sp_site)
+                    selected_sp_site = sp_site
                 except Exception as ex:
                     st.write(ex)
 

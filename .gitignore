@@ -2,3 +2,5 @@ env\
 *.db
 *.yaml
 Project_notes.txt
+/uploads
+controllers/docs
