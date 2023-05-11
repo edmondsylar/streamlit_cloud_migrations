@@ -4,3 +4,7 @@ env\
 Project_notes.txt
 /uploads
 controllers/docs
+.env
+
+image_1.jpg
+image_2.jpg

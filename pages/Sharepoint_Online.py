@@ -62,6 +62,7 @@ def create_tabs(list_of_dicts):
                     upload = st.file_uploader("Upload Files", accept_multiple_files=True)
                     submit = st.form_submit_button(label="Submit")
                     if submit:
+                        print("Uploading Files to site {}".format(selected_sp_site))
                         console.log(selected_sp_site)
                         # call the upload_to_libary function from OfficeClient
                         if selected_sp_site is not None:
@@ -97,9 +98,10 @@ def entry():
             # sp_library = st.text_input("Sharepoint Library")
             submit = st.form_submit_button(label="Search")
             if submit:
+                selected_sp_site = sp_site
                 try:
                     libs = OfficeClient.get_libraries(sp_site)
-                    selected_sp_site = sp_site
+                    
                 except Exception as ex:
                     st.write(ex)
 
