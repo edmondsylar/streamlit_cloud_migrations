@@ -4,6 +4,8 @@ from office365.sharepoint.files.file import File #type:ignore
 from office365.runtime.auth.user_credential import UserCredential #type:ignore
 from time import sleep
 import os
+import uuid
+import tempfile
 
 
 env = environ.Env()
@@ -14,12 +16,6 @@ environ.Env.read_env()
 # sharepoint_site = env('sharepoint_site_url')
 # sharepoint_site_name = env('sharepoint_site_name')
 # sharepoint_doc = env('sharepoint_doc_library')
-
-username = "SpAdmin@housingfinance.co.ug"
-password = "#p@ssw0rd123"
-sharepoint_site = "https://housingfinancecoug.sharepoint.com/sites/compliance-universe"
-sharepoint_site_name = "compliance-universe"
-sharepoint_doc = "Local_migration_test"
 
 
 class SharePoint:
@@ -199,10 +195,52 @@ class SharePoint:
         os.remove(file_path)
 
         return response
+    
+
+    
+    def _upload_files(self, site, document_library, content):
+        # Get a client context object using the _auth method
+        conn = self._auth()
+
+        # Get the web object for the site
+        web = conn.web
+
+        # Get the document library by its name
+        library = web.lists.get_by_title(document_library)
+
+        # Get the root folder of the document library
+        root_folder = library.root_folder
+
+        # Loop through each directory or file path in the content parameter
+        for path in content:
+            if os.path.isdir(path):
+                # If the path is a directory, loop through each file in the directory
+                for file_name in os.listdir(path):
+                    file_path = os.path.join(path, file_name)
+                    with open(file_path, 'rb') as f:
+                        # Upload the file to the root folder using add method
+                        file_creation_info = {
+                            'Url': file_name,
+                            'Overwrite': True,
+                            'ContentStream': f,
+                        }
+                        root_folder.files.add(file_creation_info)
+            else:
+                # If the path is a file, upload it to the root folder using add method
+                file_name = os.path.basename(path)
+                with open(path, 'rb') as f:
+                    file_creation_info = {
+                        'Url': file_name,
+                        'Overwrite': True,
+                        'ContentStream': f,
+                    }
+                    root_folder.files.add(file_creation_info)
+
+        return response
 
 
 # test the class 
 sp = SharePoint()
 
 # get files 
-sp.upload_files(sharepoint_site_name, sharepoint_doc, [r'D:/ptyped/Research/Logs/SSNs.txt'])
+sp.upload_files(sharepoint_site_name, sharepoint_doc, [r'/home/edmondsylar-ubuntu/Downloads'])
